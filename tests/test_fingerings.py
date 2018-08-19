@@ -14,7 +14,8 @@ class TestFingering:
             {"strings": [1], "fretted": [1,2]},
 
             # Too far of a stretch:
-            {"strings": [1,2], "fretted": [1, 10]}
+            {"strings": [1,2], "fretted": [1, 10]},
+            
         ]
         for kwargs in fail_kwargs:
             with pytest.raises(ImpossibleFingerPositionException):
@@ -25,4 +26,5 @@ class TestFingering:
 class TestFingeringsGenerator:
     def test_fg(self):
         fg = FingeringsGenerator()
-        print(fg.reachable_chord_tones([7, 11, 2]))
+        for f in fg.generate([7, 11, 2]):
+            print(f.fretted)
