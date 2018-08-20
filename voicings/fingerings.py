@@ -18,13 +18,29 @@ class Fingering:
         Try to map fingers to fretted notes to ensure the fingering is physically possible to play.
         """
         # TODO: refactor to reduce awkward positions (especially partial barres)
-        self.counter = Counter(self.fretted)
-        if len(self.counter.keys()) > self.fingers:
+        self.fret_counter = Counter(self.fretted)
+        if len(self.fret_counter.keys()) > self.fingers:
             raise ImpossibleFingerPositionException("Not enough fingers to fret/barre all notes.")
         pairs = [(i, fret) for i, fret in enumerate(self.fretted) if fret is not None]
         pairs.sort(key=(lambda p: p[1])) # sort (string, fret) pairs by fret
         if pairs[-1][1] - pairs[0][1] > 5:
             raise ImpossibleFingerPositionException("Leftmost and rightmost fret too far apart.")
+
+    def rank(self, notes=[]):
+        """
+        Count the occurrences of each chord tone in the fretted position, and assemble a tuple
+        which can rank Fingering objects. Tuples can be stably sorted to arrange Fingerings by
+        occurrences of the higher-priority (lower index) notes.
+        """
+        note_counts = self.note_count(notes=notes)
+        return tuple(note_counts[note] for note in notes)
+
+    def note_count(self, notes=[]):
+        """
+        Compare expected notes to actual notes.
+        """
+        played = [(st + fr) % 12 for st, fr in zip(self.strings, self.fretted) if fr is not None] 
+        return Counter(played)
 
 
 class ImpossibleFingerPositionException(Exception):
@@ -78,12 +94,15 @@ class FingeringsGenerator:
         root_fret = (notes[0] - self.strings[root_string]) % 12
         reachable[root_string] = [root_fret]
         for i, string in enumerate(self.strings):
+            reachable[i] = [] if not reachable[i] else reachable[i]
             if i == root_string or mute_above and i < root_string:
-                reachable[i] = [] if not reachable[i] else reachable[i]
                 continue
             stretch = 3
             fret_range = list(range(root_fret - stretch, root_fret + stretch))
             if root_fret - stretch > 0:
                 fret_range.insert(0, 0)
-            reachable[i] = [fret for fret in fret_range if (string + fret) % 12 in notes]
+            for note in notes: # Note index indicates voicing priority
+                fret = (note - string) % 12
+                if root_fret - stretch <= fret and fret <= root_fret + stretch:
+                    reachable[i].append(fret)
         return reachable

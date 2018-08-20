@@ -22,6 +22,23 @@ class TestFingering:
                 print(kwargs)
                 Fingering(**kwargs)
 
+    def test_assign_rank(self):
+        test_cases = [
+            # Major triad, root position
+            {"strings": [4,9,2], "fretted": [3,2,0], "notes": [7,11,2], "rank": (1,1,1)},
+            # Missing the fifth
+            {"strings": [4,9,2], "fretted": [3,2,5], "notes": [7,11,2], "rank": (2,1,0)},
+            # Missing the third
+            {"strings": [4,9,2], "fretted": [3,5,0], "notes": [7,11,2], "rank": (1,0,2)},
+        ]
+        for kwargs in test_cases:
+            expected = kwargs.pop("rank")
+            notes = kwargs.pop("notes")
+            assert Fingering(**kwargs).rank(notes=notes) == expected
+
+    def test_compare_rank(self):
+        # TODO
+        pass
 
 class TestFingeringsGenerator:
     def test_reachable_chord_tones(self):
@@ -31,7 +48,7 @@ class TestFingeringsGenerator:
             # with fret index matching note index.
             ([4, 9, 2], [7, 11, 2], [[3], [2,5], [5,0]]), 
             ([0,0], [0,1], [[0], [0,1]]),
-            ([0,0], [1,0], [[0], [1,0]]),
+            ([0,0], [1,0], [[1], [1,0]]),
         ]
         for (strings, notes, output) in test_cases:
             fg = FingeringsGenerator(strings=strings)
