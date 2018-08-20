@@ -24,7 +24,15 @@ class TestFingering:
 
 
 class TestFingeringsGenerator:
-    def test_fg(self):
-        fg = FingeringsGenerator()
-        for f in fg.generate([7, 11, 2]):
-            print(f.fretted)
+    def test_reachable_chord_tones(self):
+        test_cases = [
+            # (strings, notes, excepted output) pairs
+            # Be careful: test case output should be in order,
+            # with fret index matching note index.
+            ([4, 9, 2], [7, 11, 2], [[3], [2,5], [5,0]]), 
+            ([0,0], [0,1], [[0], [0,1]]),
+            ([0,0], [1,0], [[0], [1,0]]),
+        ]
+        for (strings, notes, output) in test_cases:
+            fg = FingeringsGenerator(strings=strings)
+            assert fg.reachable_chord_tones(notes=notes) == output
