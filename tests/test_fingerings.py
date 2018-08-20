@@ -37,7 +37,7 @@ class TestFingering:
             assert Fingering(**kwargs).rank(notes=notes) == expected
 
     def test_compare_rank(self):
-        # TODO
+        # TODO: this should actually go in test_voicings, with QueryResult
         pass
 
 class TestFingeringsGenerator:
