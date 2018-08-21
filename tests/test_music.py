@@ -26,7 +26,7 @@ class TestChordParsing:
             with pytest.raises(InvalidChordNameException):
                 parse_chord_name(name)
     
-    def test_triads(self):
+    def test_chords(self):
         test_cases = [
             ("C", [0, 4, 7]), 
             ("Cmaj", [0, 4, 7]), 
@@ -41,6 +41,10 @@ class TestChordParsing:
             ("Csus2", [0, 2, 7]),
             ("Csus4", [0, 5, 7]),
             ("C7", [0, 4, 7, 10]),
+            ("Cmin7", [0, 3, 7, 10]),
+            ("Cmin7b5", [0, 3, 6, 10]),
+            ("Cmaj7#11", [0, 4, 7, 11, 6]),
+            ("Cmaj7#5", [0, 4, 8, 11]),
         ]
         for name, notes in test_cases:
             assert parse_chord_name(name) == notes

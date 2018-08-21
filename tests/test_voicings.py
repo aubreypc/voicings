@@ -1,5 +1,5 @@
 from ..voicings.fingerings import Fingering, FingeringsGenerator
-from ..voicings.voicings import QueryResult
+from ..voicings.voicings import QueryResult, voicings
 import pytest
 
 class TestQueryResult:
@@ -30,3 +30,21 @@ class TestQueryResult:
                 else:
                     print("{} NOT {} {}?".format(fretted1, op, fretted2))
                     assert not compares[op](q1, q2)
+                assert q1.fretted == f1.fretted
+                assert q2.fretted == f2.fretted
+
+    def test_sorting(self):
+        strings, notes, f1, f2 = ([4,9,2], [7,11,2], [3,2,0], [3,2,5])
+        f1 = Fingering(strings=strings, fretted=f1)
+        f2 = Fingering(strings=strings, fretted=f2)
+        q1 = QueryResult(f1, notes)
+        q2 = QueryResult(f2, notes)
+        assert sorted([q1, q2]) == [q2, q1]
+        assert q1.fretted == f1.fretted
+        assert q2.fretted == f2.fretted
+
+
+def test_voicings():
+    v = voicings("C")
+    for voicing in v:
+        assert voicing
