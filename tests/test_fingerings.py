@@ -36,9 +36,6 @@ class TestFingering:
             notes = kwargs.pop("notes")
             assert Fingering(**kwargs).rank(notes=notes) == expected
 
-    def test_compare_rank(self):
-        # TODO: this should actually go in test_voicings, with QueryResult
-        pass
 
 class TestFingeringsGenerator:
     def test_reachable_chord_tones(self):
