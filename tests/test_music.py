@@ -42,9 +42,9 @@ class TestChordParsing:
             ("Csus4", [0, 5, 7]),
             ("C7", [0, 4, 7, 10]),
             ("Cmin7", [0, 3, 7, 10]),
-            ("Cmin7b5", [0, 3, 6, 10]),
+            ("Cmin7b5", [0, 3, 10, 6]),
             ("Cmaj7#11", [0, 4, 7, 11, 6]),
-            ("Cmaj7#5", [0, 4, 8, 11]),
+            ("Cmaj7#5", [0, 4, 11, 8]),
         ]
         for name, notes in test_cases:
             assert parse_chord_name(name) == notes

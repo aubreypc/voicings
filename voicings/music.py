@@ -14,7 +14,16 @@ qualities = {
     "sus2sus4": [0, 2, 5, 7],
 }
 extensions = {
-    "7": 10
+    # name: (adds, removes); if int, just adds
+    "7": 10,
+    "(maj7)": 11,
+    "b5": (6, 7),
+    "#5": (8, 7),
+    "add9": 2,
+    "add6": 9,
+    "add11": 7,
+    "add13": 9,
+    "#11": 6,
 }
 
 def match_substrings(string, subs):
@@ -39,7 +48,7 @@ def parse_chord_name(chord_str):
     if len(chord_str) == 1:
         root = chromatic_sharps.index(chord_str)
         return transpose(qualities["maj"], root)
-    root, quality, added_tones = (None, None, [])
+    root, quality, remove_tones, added_tones = (None, None, [], [])
     unmatched = len(chord_str)
     i = 0
     while i < len(chord_str):
@@ -69,7 +78,11 @@ def parse_chord_name(chord_str):
             matches = match_substrings(chord_str[i:], candidates)
             if matches:
                 ext = max(matches, key=len)
-                added_tones.append(extensions[ext])
+                if type(extensions[ext]) is tuple:
+                    added_tones.append(extensions[ext][0])
+                    remove_tones.append(extensions[ext][1])
+                else:
+                    added_tones.append(extensions[ext])
                 unmatched -= len(ext)
                 i += len(ext)
                 continue
@@ -79,7 +92,10 @@ def parse_chord_name(chord_str):
     if unmatched > 0:
         raise InvalidChordNameException()
     quality = quality or "maj"
-    return transpose(qualities[quality], root) + transpose(added_tones, root)
+    chord = transpose(qualities[quality], root) + transpose(added_tones, root)
+    for tone in remove_tones:
+        chord.remove(tone)
+    return chord
 
 def transpose(notes, interval):
     return [(note + interval) % 12 for note in notes]
