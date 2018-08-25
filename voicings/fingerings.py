@@ -53,7 +53,7 @@ class FingeringsGenerator:
     """
     def __init__(self, strings=(4, 9, 2, 7, 11, 4), fingers=4):
         self.strings = strings
-        self.fingers = fingers if len(strings) >= fingers else len(strings)
+        self.fingers = min(fingers, len(strings))
 
     def generate(self, notes, root_string=0, mute_above=True):
         """

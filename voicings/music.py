@@ -39,6 +39,15 @@ def match_substrings(string, subs):
                 break
     return matched
 
+def parse_note_names(notes):
+    out = []
+    for note in notes:
+        if "#" in note:
+            out.append(chromatic_sharps.index(note))
+        else:
+            out.append(chromatic_flats.index(note))
+    return out
+
 def parse_chord_name(chord_str):
     """
     Convert user-inputted chord name into list of notes.

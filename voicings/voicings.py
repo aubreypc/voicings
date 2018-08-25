@@ -28,15 +28,14 @@ class QueryResult:
         return (self.complete, self.rank) != (other.complete, other.rank)
 
 
-def voicings(chord_str):
+def voicings(chord_str, strings=(4, 9, 2, 7, 11, 4), fingers=4, root_string=0, mute_above=False):
     """
     Fetch all of a chord's voicings and yield them in sorted order.
     """
-    gen = FingeringsGenerator()
+    gen = FingeringsGenerator(strings=strings, fingers=fingers)
     chord = parse_chord_name(chord_str)
     res = []
-    for voicing in gen.generate(chord):
-        prev = voicing
+    for voicing in gen.generate(chord, root_string=root_string, mute_above=mute_above):
         q = QueryResult(voicing, chord)
         res.append(q)
     res.sort()
